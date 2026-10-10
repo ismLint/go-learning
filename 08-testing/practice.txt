@@ -1,0 +1,1 @@
+Обучение тестам находится рядом с user/validation в 07-packages/user

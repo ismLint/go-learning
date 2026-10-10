@@ -1,13 +1,13 @@
 package user
 
 func FilterAdults(users []User) []User {
-	adultUser := make([]User, 0)
+	adults := make([]User, 0)
 
 	for _, currentUser := range users {
 		if currentUser.IsAdult() {
-			adultUser = append(adultUser, currentUser)
+			adults = append(adults, currentUser)
 		}
 	}
 
-	return adultUser
+	return adults
 }
