@@ -10,28 +10,41 @@ import (
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	var wg sync.WaitGroup
+	result := make(chan string, 2)
 
-	wg.Add(1)
+	wg.Add(2)
 
-	go worker(ctx, &wg)
+	go worker(ctx, 1, result, &wg)
+	go worker(ctx, 2, result, &wg)
 
-	time.Sleep(350 * time.Millisecond)
-	cancel()
+	go func() {
+		wg.Wait()
+		close(result)
+	}()
 
-	wg.Wait()
+	go func() {
+		time.Sleep(350 * time.Millisecond)
+		cancel()
+	}()
+
+	for message := range result {
+		fmt.Println(message)
+	}
 }
 
-func worker(ctx context.Context, wg *sync.WaitGroup) {
+func worker(ctx context.Context, id int, result chan<- string, wg *sync.WaitGroup) {
 	defer wg.Done()
 
 	for {
 		select {
 		case <-ctx.Done():
-			fmt.Println("worker stopped")
+			subString := fmt.Sprintf("worker %d stopped", id)
+			result <- subString
 			return
 
 		case <-time.After(100 * time.Millisecond):
-			fmt.Println("worker working")
+			subString := fmt.Sprintf("worker %d working", id)
+			result <- subString
 		}
 	}
 }
