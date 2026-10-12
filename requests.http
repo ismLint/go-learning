@@ -1,1 +1,4 @@
-GET http://localhost:8080/tasks/2
+POST http://localhost:8080/echo
+Content-Type: text/plain
+
+< ./large.txt
